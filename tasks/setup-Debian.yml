@@ -1,4 +1,16 @@
 ---
+- name: Ensure nginx-common package is absent
+  apt:
+    name: nginx-common
+    state: absent
+  register: nginx_mask
+  become: yes
+
+- name: Ensure nginx service is unmasked
+  command: systemctl unmask nginx.service
+  when: nginx_mask.changed
+  become: yes
+
 - name: Update apt cache.
   apt: update_cache=yes cache_valid_time=86400
   changed_when: false
